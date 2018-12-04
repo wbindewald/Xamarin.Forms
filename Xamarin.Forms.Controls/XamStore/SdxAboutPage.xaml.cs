@@ -18,7 +18,7 @@ namespace Xamarin.Forms.Controls
 		async void HandleToAbout(object sender, EventArgs e)
 		{
 			var shell = Application.Current.MainPage as Shell;
-			await shell.GoToAsync("app:///sdxshell/about?welcome=sdx");
+			await Shell.CurrentShell.GoToAsync("app:///sdxshell/about?welcome=sdx");
 		}
 
 		async void HandleToLeft(object sender, EventArgs e)
