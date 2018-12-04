@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace Xamarin.Forms.Controls
 {
 	[Preserve]
-	[QueryProperty("Text", "welcome")]
+	//[QueryProperty("Text", "welcome")]
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ShellContent : ContentPage
 	{

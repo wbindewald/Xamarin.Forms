@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Shell
+		xmlns="http://xamarin.com/schemas/2014/forms"
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+		xmlns:local="using:Xamarin.Forms.Controls"
+		x:Class="Xamarin.Forms.Controls.SdxShell"
+		RouteScheme="http" RouteHost="www.xamarin.com" Route="sdxshell">
+	<Shell.FlyoutHeader>
+		<Image
+				Aspect="AspectFill"
+				Source="xamarinstore.jpg"
+				Opacity="0.6" />
+	</Shell.FlyoutHeader>
+	
+	<ShellItem
+			Title="Home"
+			Route="home" >
+		<ShellContent
+				Title="Left"
+				Route="left"
+				ContentTemplate="{DataTemplate local:SdxAboutPage}"
+				Shell.ShellBackgroundColor="#EF6C00"/>
+		<ShellContent
+				Title="Right"
+				Route="right"
+				ContentTemplate="{DataTemplate local:SdxAboutPage}"
+				Shell.ShellBackgroundColor="#ED3B3B"/>
+	</ShellItem>			
+	
+	<MenuItem Text="Xam Protect" Icon="jet.png" />
+	
+	<ShellContent
+			Title="About"
+			Route="about"
+			ContentTemplate="{DataTemplate local:SdxAboutPage}"
+			Shell.ShellBackgroundColor="#689F39"/>
+</Shell>
