@@ -11,15 +11,23 @@ namespace Xamarin.Forms
 	[ContentProperty("Items")]
 	public class ShellSection : ShellGroupItem, IShellSectionController, IPropertyPropagationController
 	{
-		#region PropertyKeys
-
 		static readonly BindablePropertyKey ItemsPropertyKey =
 			BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellContentCollection), typeof(ShellSection), null,
 				defaultValueCreator: bo => new ShellContentCollection());
 
-		#endregion PropertyKeys
+		public static readonly BindableProperty ItemsProperty = ItemsPropertyKey.BindableProperty;
 
-		#region IShellSectionController
+		public static readonly BindableProperty CurrentItemProperty =
+		BindableProperty.Create(nameof(CurrentItem), typeof(ShellContent), typeof(ShellSection), null, BindingMode.TwoWay,
+			propertyChanged: OnCurrentItemChanged);
+
+		public ShellContent CurrentItem
+		{
+			get => (ShellContent)GetValue(CurrentItemProperty);
+			set => SetValue(CurrentItemProperty, value);
+		}
+
+		public ShellContentCollection Items => (ShellContentCollection)GetValue(ItemsProperty);
 
 		readonly List<(object Observer, Action<Page> Callback)> _displayedPageObservers =
 			new List<(object Observer, Action<Page> Callback)>();
@@ -95,21 +103,15 @@ namespace Xamarin.Forms
 		bool IShellSectionController.RemoveDisplayedPageObserver(object observer)
 		{
 			foreach (var item in _displayedPageObservers)
-			{
 				if (item.Observer == observer)
-				{
 					return _displayedPageObservers.Remove(item);
-				}
-			}
 			return false;
 		}
 
 		void IShellSectionController.SendInsetChanged(Thickness inset, double tabThickness)
 		{
 			foreach (var observer in _observers)
-			{
 				observer.OnInsetChanged(inset, tabThickness);
-			}
 			_lastInset = inset;
 			_lastTabThickness = tabThickness;
 		}
@@ -127,20 +129,11 @@ namespace Xamarin.Forms
 			SendUpdateCurrentState(ShellNavigationSource.Pop);
 		}
 
-		#endregion IShellSectionController
-
-		#region IPropertyPropagationController
 		void IPropertyPropagationController.PropagatePropertyChanged(string propertyName)
 		{
 			PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, Items);
 		}
-		#endregion
 
-		public static readonly BindableProperty CurrentItemProperty =
-			BindableProperty.Create(nameof(CurrentItem), typeof(ShellContent), typeof(ShellSection), null, BindingMode.TwoWay,
-				propertyChanged: OnCurrentItemChanged);
-
-		public static readonly BindableProperty ItemsProperty = ItemsPropertyKey.BindableProperty;
 
 		Page _displayedPage;
 		IList<Element> _logicalChildren = new List<Element>();
@@ -155,23 +148,14 @@ namespace Xamarin.Forms
 			Navigation = new NavigationImpl(this);
 		}
 
-		public ShellContent CurrentItem
-		{
-			get { return (ShellContent)GetValue(CurrentItemProperty); }
-			set { SetValue(CurrentItemProperty, value); }
-		}
-
-		public ShellContentCollection Items => (ShellContentCollection)GetValue(ItemsProperty);
-
 		public IReadOnlyList<Page> Stack => _navStack;
 
 		internal override ReadOnlyCollection<Element> LogicalChildrenInternal => _logicalChildrenReadOnly ?? (_logicalChildrenReadOnly = new ReadOnlyCollection<Element>(_logicalChildren));
 
 		Page DisplayedPage
 		{
-			get { return _displayedPage; }
-			set
-			{
+			get => _displayedPage;
+			set {
 				if (_displayedPage == value)
 					return;
 				_displayedPage = value;
@@ -190,13 +174,11 @@ namespace Xamarin.Forms
 #endif
 		public static implicit operator ShellSection(ShellContent shellContent)
 		{
-			var shellSection = new ShellSection();
+			var shellSection = new ShellSection {
+				Route = Routing.GenerateImplicitRoute(shellContent.Route),
+				Items = { shellContent },
+			};
 
-			var contentRoute = shellContent.Route;
-
-			shellSection.Route = Routing.GenerateImplicitRoute(contentRoute);
-
-			shellSection.Items.Add(shellContent);
 			shellSection.SetBinding(TitleProperty, new Binding("Title", BindingMode.OneWay, source: shellContent));
 			shellSection.SetBinding(IconProperty, new Binding("Icon", BindingMode.OneWay, source: shellContent));
 			return shellSection;
@@ -206,9 +188,7 @@ namespace Xamarin.Forms
 		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
 #endif
 		public static implicit operator ShellSection(TemplatedPage page)
-		{
-			return (ShellSection)(ShellContent)page;
-		}
+			=> (ShellSection)(ShellContent)page;
 
 		public virtual async Task GoToAsync(List<string> routes, IDictionary<string, string> queryData, bool animate)
 		{
@@ -233,13 +213,10 @@ namespace Xamarin.Forms
 					}
 
 					while (_navStack.Count > i + 1)
-					{
 						await OnPopAsync(false);
-					}
 				}
 
-				var content = Routing.GetOrCreateContent(route) as Page;
-				if (content == null)
+				if (!(Routing.GetOrCreateContent(route) is Page content))
 					break;
 
 				Shell.ApplyQueryAttributes(content, queryData, isLast);
@@ -252,9 +229,7 @@ namespace Xamarin.Forms
 		internal void SendStructureChanged()
 		{
 			if (Parent?.Parent is Shell shell)
-			{
 				shell.SendStructureChanged();
-			}
 		}
 
 		protected virtual IReadOnlyList<Page> GetNavigationStack() => _navStack;
@@ -263,9 +238,7 @@ namespace Xamarin.Forms
 		{
 			var stack = Stack;
 			if (stack.Count > 1)
-			{
 				DisplayedPage = stack[stack.Count - 1];
-			}
 			else
 			{
 				IShellContentController currentItem = CurrentItem;

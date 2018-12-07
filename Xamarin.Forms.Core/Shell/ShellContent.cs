@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-
 #if NETSTANDARD1_0
 using System.Linq;
 #endif
-
 using System.Reflection;
+
 using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
@@ -22,21 +20,29 @@ namespace Xamarin.Forms
 		public static readonly BindableProperty MenuItemsProperty = MenuItemsPropertyKey.BindableProperty;
 
 		public static readonly BindableProperty ContentProperty =
-			BindableProperty.Create(nameof(Content), typeof(object), typeof(ShellContent), null, BindingMode.OneTime, propertyChanged: OnContentChanged);
+			BindableProperty.Create(nameof(Content), typeof(object), typeof(ShellContent), null, BindingMode.OneTime,
+				propertyChanged: OnContentChanged);
 
 		public static readonly BindableProperty ContentTemplateProperty =
 			BindableProperty.Create(nameof(ContentTemplate), typeof(DataTemplate), typeof(ShellContent), null, BindingMode.OneTime);
 
 		public MenuItemCollection MenuItems => (MenuItemCollection)GetValue(MenuItemsProperty);
 
-		public object Content {
+		public object Content
+		{
 			get => GetValue(ContentProperty);
 			set => SetValue(ContentProperty, value);
 		}
 
-		public DataTemplate ContentTemplate {
+		public DataTemplate ContentTemplate
+		{
 			get => (DataTemplate)GetValue(ContentTemplateProperty);
 			set => SetValue(ContentTemplateProperty, value);
+		}
+
+		public ShellContent()
+		{
+			((INotifyCollectionChanged)MenuItems).CollectionChanged += MenuItemsCollectionChanged;
 		}
 
 		Page IShellContentController.Page => ContentCache;
@@ -83,18 +89,11 @@ namespace Xamarin.Forms
 		IList<Element> _logicalChildren = new List<Element>();
 		ReadOnlyCollection<Element> _logicalChildrenReadOnly;
 
-		public ShellContent()
-		{
-			((INotifyCollectionChanged)MenuItems).CollectionChanged += MenuItemsCollectionChanged;
-		}
-
-
 		internal override ReadOnlyCollection<Element> LogicalChildrenInternal => _logicalChildrenReadOnly ?? (_logicalChildrenReadOnly = new ReadOnlyCollection<Element>(_logicalChildren));
 
 		Page ContentCache {
-			get { return _contentCache; }
-			set
-			{
+			get => _contentCache;
+			set {
 				_contentCache = value;
 				if (Parent != null)
 					((ShellSection)Parent).UpdateDisplayedPage();

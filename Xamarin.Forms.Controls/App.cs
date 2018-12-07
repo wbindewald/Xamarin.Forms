@@ -124,14 +124,14 @@ namespace Xamarin.Forms.Controls
 			//return mdp;
 
 			Device.SetFlags(new[] { "Shell_Experimental" });
-            return new SdxShell();
+			return new SdxShell();
         }
 
         protected override void OnAppLinkRequestReceived(Uri uri)
 		{
 			var appDomain = "http://" + AppName.ToLowerInvariant() + "/";
 
-			if (!uri.ToString().ToLowerInvariant().StartsWith(appDomain))
+			if (!uri.ToString().StartsWith(appDomain, StringComparison.OrdinalIgnoreCase))
 				return;
 
 			var url = uri.ToString().Replace(appDomain, "");

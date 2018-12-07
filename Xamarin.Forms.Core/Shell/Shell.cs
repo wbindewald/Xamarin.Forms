@@ -687,9 +687,7 @@ namespace Xamarin.Forms
 							{
 								currentGroup.Add(shellContent);
 								if (shellContent == shellSection.CurrentItem)
-								{
 									currentGroup.AddRange(shellContent.MenuItems);
-								}
 							}
 							IncrementGroup();
 						}
@@ -699,17 +697,13 @@ namespace Xamarin.Forms
 
 							// If we have only a single child we will also show the items menu items
 							if (shellSection.Items.Count == 1 && shellSection == shellItem.CurrentItem)
-							{
 								currentGroup.AddRange(shellSection.CurrentItem.MenuItems);
-							}
 						}
 					}
 					IncrementGroup();
 				}
 				else
-				{
 					currentGroup.Add(shellItem);
-				}
 			}
 
 			IncrementGroup();

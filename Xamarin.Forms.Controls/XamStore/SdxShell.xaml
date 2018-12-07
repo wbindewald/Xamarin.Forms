@@ -12,9 +12,34 @@
 				Opacity="0.6" />
 	</Shell.FlyoutHeader>
 	
+	<Shell.ItemTemplate>
+        <DataTemplate>
+            <ContentView HeightRequest="32" BackgroundColor="HotPink">
+                <ContentView.Padding>
+                    <Thickness
+                    Left="32"
+                    Top="16" /> 
+                </ContentView.Padding>
+                <Label Text="{Binding Title}" />
+            </ContentView>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <ContentView HeightRequest="32" BackgroundColor="Teal">
+                <ContentView.Padding>
+                    <Thickness
+                    Left="32"
+                    Top="16" />
+                </ContentView.Padding>
+                <Label Text="{Binding Text}" FontAttributes="Bold" />
+            </ContentView>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
 	<ShellItem
 			Title="Home"
-			Route="home" >
+			Route="home"
+			FlyoutDisplayOptions="AsMultipleItems">
 		<ShellContent
 				Title="Left"
 				Route="left"
@@ -24,11 +49,19 @@
 				Title="Right"
 				Route="right"
 				ContentTemplate="{DataTemplate local:SdxAboutPage}"
-				Shell.ShellBackgroundColor="#ED3B3B"/>
+				Shell.ShellBackgroundColor="#ED3B3B">
+			<ShellContent.MenuItems>
+				<MenuItem Text="MenuItem in Section"/>
+				<MenuItem Text="2nd MenuItem in Section"/>
+			</ShellContent.MenuItems>
+		</ShellContent>
 	</ShellItem>			
 	
 	<MenuItem Text="Xam Protect" Icon="jet.png" />
 	
+	<Shell.MenuItems>
+		<MenuItem Text="MenuItem in collection"/>
+	</Shell.MenuItems>
 	<ShellContent
 			Title="About"
 			Route="about"
