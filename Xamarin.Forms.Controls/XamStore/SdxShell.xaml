@@ -13,7 +13,7 @@
 	</Shell.FlyoutHeader>
 	
 	<Shell.ItemTemplate>
-        <DataTemplate>
+<!--        <DataTemplate>
             <ContentView HeightRequest="32" BackgroundColor="HotPink">
                 <ContentView.Padding>
                     <Thickness
@@ -23,20 +23,10 @@
                 <Label Text="{Binding Title}" />
             </ContentView>
         </DataTemplate>
-    </Shell.ItemTemplate>
-    <Shell.MenuItemTemplate>
-        <DataTemplate>
-            <ContentView HeightRequest="32" BackgroundColor="Teal">
-                <ContentView.Padding>
-                    <Thickness
-                    Left="32"
-                    Top="16" />
-                </ContentView.Padding>
-                <Label Text="{Binding Text}" FontAttributes="Bold" />
-            </ContentView>
-        </DataTemplate>
-    </Shell.MenuItemTemplate>
-	<ShellItem
+-->    </Shell.ItemTemplate>
+	
+	<Item Title="menu item" Icon="jet.png" />
+<!--	<ShellItem
 			Title="Home"
 			Route="home"
 			FlyoutDisplayOptions="AsMultipleItems">
@@ -59,12 +49,11 @@
 	
 	<MenuItem Text="Xam Protect" Icon="jet.png" />
 	
-	<Shell.MenuItems>
-		<MenuItem Text="MenuItem in collection"/>
-	</Shell.MenuItems>
+	<MenuItem Text="MenuItem in collection"/>
 	<ShellContent
 			Title="About"
 			Route="about"
 			ContentTemplate="{DataTemplate local:SdxAboutPage}"
 			Shell.ShellBackgroundColor="#689F39"/>
+-->
 </Shell>

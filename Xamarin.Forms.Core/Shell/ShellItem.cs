@@ -96,22 +96,6 @@ namespace Xamarin.Forms
 				shell.SendStructureChanged();
 		}
 
-#if DEBUG
-		[Obsolete ("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(ShellSection shellSection)
-		{
-			var result = new ShellItem {
-				Route = Routing.GenerateImplicitRoute(shellSection.Route),
-				Items = { shellSection },
-			};
-
-			result.SetBinding(TitleProperty, new Binding(nameof(Title), BindingMode.OneWay, source: shellSection));
-			result.SetBinding(IconProperty, new Binding(nameof(Icon), BindingMode.OneWay, source: shellSection));
-			result.SetBinding(FlyoutDisplayOptionsProperty, new Binding(nameof(FlyoutDisplayOptions), BindingMode.OneTime, source: shellSection));
-			return result;
-		}
-
 		public IPlatformElementConfiguration<T, ShellItem> On<T>() where T : IConfigPlatform
 			=> _platformConfigurationRegistry.Value.On<T>();
 
@@ -161,6 +145,22 @@ namespace Xamarin.Forms
 #if DEBUG
 		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
 #endif
+		public static implicit operator ShellItem(ShellSection shellSection)
+		{
+			var result = new ShellItem {
+				Route = Routing.GenerateImplicitRoute(shellSection.Route),
+				Items = { shellSection },
+			};
+
+			result.SetBinding(TitleProperty, new Binding(nameof(Title), BindingMode.OneWay, source: shellSection));
+			result.SetBinding(IconProperty, new Binding(nameof(Icon), BindingMode.OneWay, source: shellSection));
+			result.SetBinding(FlyoutDisplayOptionsProperty, new Binding(nameof(FlyoutDisplayOptions), BindingMode.OneTime, source: shellSection));
+			return result;
+		}
+
+#if DEBUG
+		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+#endif
 		public static implicit operator ShellItem(ShellContent shellContent)
 			=> (ShellSection)shellContent;
 
@@ -175,5 +175,11 @@ namespace Xamarin.Forms
 #endif
 		public static implicit operator ShellItem(MenuItem menuItem)
 			=> new MenuShellItem(menuItem);
+
+#if DEBUG
+		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+#endif
+		public static implicit operator ShellItem(Item menuItem)
+			=> menuItem.AsShellItem();
 	}
 }
