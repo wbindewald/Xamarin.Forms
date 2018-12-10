@@ -11,7 +11,6 @@ namespace Xamarin.Forms.Platform.iOS
 		readonly IShellContext _context;
 		readonly Action<Element> _onElementSelected;
 		DataTemplate _defaultItemTemplate;
-		DataTemplate _defaultMenuItemTemplate;
 		List<List<Element>> _groups;
 
 		public ShellTableViewSource(IShellContext context, Action<Element> onElementSelected)
@@ -37,8 +36,8 @@ namespace Xamarin.Forms.Platform.iOS
 		protected virtual DataTemplate DefaultItemTemplate =>
 			_defaultItemTemplate ?? (_defaultItemTemplate = new DataTemplate(() => GenerateDefaultCell("Title", "FlyoutIcon")));
 
-		protected virtual DataTemplate DefaultMenuItemTemplate =>
-			_defaultMenuItemTemplate ?? (_defaultMenuItemTemplate = new DataTemplate(() => GenerateDefaultCell("Text", "Icon")));
+		//protected virtual DataTemplate DefaultMenuItemTemplate =>
+			//_defaultMenuItemTemplate ?? (_defaultMenuItemTemplate = new DataTemplate(() => GenerateDefaultCell("Text", "Icon")));
 
 		public void ClearCache()
 		{
@@ -54,7 +53,7 @@ namespace Xamarin.Forms.Platform.iOS
 			DataTemplate template = null;
 			if (context is MenuItem)
 			{
-				template = _context.Shell.MenuItemTemplate ?? DefaultMenuItemTemplate;
+				template = _context.Shell.ItemTemplate ?? DefaultItemTemplate;
 			}
 			else
 			{
