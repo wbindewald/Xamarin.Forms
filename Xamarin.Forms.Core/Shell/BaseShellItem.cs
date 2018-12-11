@@ -4,48 +4,36 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	public class BaseShellItem : NavigableElement, IPropertyPropagationController, IVisualController, IFlowDirectionController
+	public abstract class BaseShellItem : NavigableElement, IPropertyPropagationController, IVisualController, IFlowDirectionController
 	{
-		internal static readonly BindablePropertyKey IsCheckedPropertyKey =
-			BindableProperty.CreateReadOnly(nameof(IsChecked), typeof(bool), typeof(BaseShellItem), false);
+		internal static readonly BindableProperty ShellItemProperty =
+			BindableProperty.Create("_ShellItem", typeof(BaseShellItem), typeof(BaseShellItem), default(BaseShellItem));
 
-		public static readonly BindableProperty IsCheckedProperty = IsCheckedPropertyKey.BindableProperty;
-
-		public static readonly BindableProperty IconProperty =
-			BindableProperty.Create(nameof(Icon), typeof(ImageSource), typeof(BaseShellItem), null, BindingMode.OneWay);
-
-		public static readonly BindableProperty IsEnabledProperty =
-			BindableProperty.Create(nameof(IsEnabled), typeof(bool), typeof(BaseShellItem), true, BindingMode.OneWay);
-
-		public static readonly BindableProperty TitleProperty =
-			BindableProperty.Create(nameof(Title), typeof(string), typeof(BaseShellItem), null, BindingMode.OneTime);
-
-		public bool IsChecked => (bool)GetValue(IsCheckedProperty);
-
-		public ImageSource Icon
+		internal readonly Item _item;
+		internal BaseShellItem(Item item)
 		{
-			get => (ImageSource)GetValue(IconProperty);
-			set => SetValue(IconProperty, value);
+			_item = item ?? throw new ArgumentNullException(nameof(item));
+			_item.SetValue(ShellItemProperty, this);
+			item.PropertyChanged += (s, e) => OnPropertyChanged(e.PropertyName);
 		}
 
-		public bool IsEnabled
-		{
-			get => (bool)GetValue(IsEnabledProperty);
-			set => SetValue(IsEnabledProperty, value);
-		}
+		public bool IsChecked => _item.IsChecked;
+		public ImageSource Icon => _item.Icon;
+		public string Route => _item.Route;
+		public string Title => _item.Title;
+		public bool IsEnabled => _item.IsEnabled;
 
-		public string Route
-		{
-			get => Routing.GetRoute(this);
-			set => Routing.SetRoute(this, value);
-		}
+		//Overriding those will allow renderers to access properties set on the Item as if they were properties
+		//of the BaseShellItem themselves. We do not care (much) about overriding SetBinding() as this type is not
+		//meant to be used by the users.
+		public new void SetValue(BindableProperty property, object value) => _item.SetValue(property, value);
+		public new void SetValue(BindablePropertyKey propertyKey, object value) => _item.SetValue(propertyKey, value);
+		public new object GetValue(BindableProperty property) => _item.GetValue(property);
+		public new void SetValueFromRenderer(BindableProperty property, object value) => _item.SetValueFromRenderer(property, value);
 
-		public string Title
-		{
-			get => (string)GetValue(TitleProperty);
-			set => SetValue(TitleProperty, value);
-		}
 
+
+		//TODO, review everything below this line
 		IVisual _effectiveVisual = Xamarin.Forms.VisualMarker.Default;
 		IVisual IVisualController.EffectiveVisual {
 			get => _effectiveVisual;
@@ -56,7 +44,8 @@ namespace Xamarin.Forms
 		}
 		IVisual IVisualController.Visual => Xamarin.Forms.VisualMarker.MatchParent;
 
-		void IPropertyPropagationController.PropagatePropertyChanged(string propertyName) => PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, LogicalChildren);
+		void IPropertyPropagationController.PropagatePropertyChanged(string propertyName)
+			=> PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, LogicalChildren);
 
 		EffectiveFlowDirection _effectiveFlowDirection = default(EffectiveFlowDirection);
 		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection

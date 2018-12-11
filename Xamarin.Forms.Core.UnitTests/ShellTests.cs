@@ -33,7 +33,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellSection = new ShellSection();
 			var shellContent = new ShellContent { Content = new ContentPage() };
 			shellSection.Items.Add(shellContent);
-			shellItem.Items.Add(shellSection);
+			shellItem.Sections.Add(shellSection);
 			shell.Items.Add(shellItem);
 
 			Assert.That(shell.CurrentItem, Is.EqualTo(shellItem));
@@ -48,7 +48,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellSection = new ShellSection();
 			var shellContent = new ShellContent { Content = page };
 			shellSection.Items.Add(shellContent);
-			shellItem.Items.Add(shellSection);
+			shellItem.Sections.Add(shellSection);
 			shell.Items.Add(shellItem);
 
 			NavigationProxy proxy = page.NavigationProxy.Inner as NavigationProxy;
@@ -67,7 +67,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellSection = new ShellSection();
 			var shellContent = new ShellContent { Content = new ContentPage() };
 			shellSection.Items.Add(shellContent);
-			shellItem.Items.Add(shellSection);
+			shellItem.Sections.Add(shellSection);
 			shell.Items.Add(shellItem);
 
 			Assume.That(shell.CurrentItem, Is.EqualTo(shellItem));
@@ -111,11 +111,11 @@ namespace Xamarin.Forms.Core.UnitTests
 			var tabthree = MakeSimpleShellSection("tabthree", "content");
 			var tabfour = MakeSimpleShellSection("tabfour", "content");
 
-			one.Items.Add(tabone);
-			one.Items.Add(tabtwo);
+			one.Sections.Add(tabone);
+			one.Sections.Add(tabtwo);
 
-			two.Items.Add(tabthree);
-			two.Items.Add(tabfour);
+			two.Sections.Add(tabthree);
+			two.Sections.Add(tabfour);
 
 			shell.Items.Add(one);
 			shell.Items.Add(two);
@@ -194,8 +194,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			var tabone = MakeSimpleShellSection("tabone", "content");
 			var tabfour = MakeSimpleShellSection("tabfour", "content", null);
 
-			one.Items.Add(tabone);
-			two.Items.Add(tabfour);
+			one.Sections.Add(tabone);
+			two.Sections.Add(tabfour);
 
 			shell.Items.Add(one);
 			shell.Items.Add(two);
@@ -228,8 +228,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			var tabone = MakeSimpleShellSection("tabone", "content");
 			var tabfour = MakeSimpleShellSection("tabfour", "content");
 
-			one.Items.Add(tabone);
-			two.Items.Add(tabfour);
+			one.Sections.Add(tabone);
+			two.Sections.Add(tabfour);
 
 			shell.Items.Add(one);
 			shell.Items.Add(two);
@@ -253,11 +253,11 @@ namespace Xamarin.Forms.Core.UnitTests
 			var tabthree = MakeSimpleShellSection("tabthree", "content");
 			var tabfour = MakeSimpleShellSection("tabfour", "content");
 
-			one.Items.Add(tabone);
-			one.Items.Add(tabtwo);
+			one.Sections.Add(tabone);
+			one.Sections.Add(tabtwo);
 
-			two.Items.Add(tabthree);
-			two.Items.Add(tabfour);
+			two.Sections.Add(tabthree);
+			two.Sections.Add(tabfour);
 
 			shell.Items.Add(one);
 			shell.Items.Add(two);

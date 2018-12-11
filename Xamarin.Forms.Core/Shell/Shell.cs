@@ -159,8 +159,8 @@ namespace Xamarin.Forms
 		static readonly BindablePropertyKey CurrentStatePropertyKey =
 			BindableProperty.CreateReadOnly(nameof(CurrentState), typeof(ShellNavigationState), typeof(Shell), null);
 
-		static readonly BindablePropertyKey ItemsPropertyKey = BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellItemCollection), typeof(Shell), null,
-				defaultValueCreator: bo => new ShellItemCollection { Inner = new ElementCollection<ShellItem>(((Shell)bo).InternalChildren) });
+		static readonly BindablePropertyKey ItemsPropertyKey = BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellCollection<ShellItem>), typeof(Shell), null,
+				defaultValueCreator: bo => new ShellCollection<ShellItem> { Inner = new ElementCollection<ShellItem>(((Shell)bo).InternalChildren) });
 
 		List<(IAppearanceObserver Observer, Element Pivot)> _appearanceObservers = new List<(IAppearanceObserver Observer, Element Pivot)>();
 		List<IFlyoutBehaviorObserver> _flyoutBehaviorObservers = new List<IFlyoutBehaviorObserver>();
@@ -251,9 +251,9 @@ namespace Xamarin.Forms
 			ShellContent shellContent = null;
 
 			switch (element) {
-			case MenuShellItem menuShellItem:
-				((IMenuItemController)menuShellItem.MenuItem).Activate();
-				break;
+			//case MenuShellItem menuShellItem:
+				//((IMenuController)menuShellItem.MenuItem).Activate();
+				//break;
 			case ShellItem i:
 				shellItem = i;
 				break;
@@ -428,7 +428,7 @@ namespace Xamarin.Forms
 
 			//if the lastItem is implicitly wrapped, get the actual ShellContent
 			if (isLastItem) {
-				if (element is ShellItem shellitem && shellitem.Items.FirstOrDefault() is ShellSection section)
+				if (element is ShellItem shellitem && shellitem.Sections.FirstOrDefault() is ShellSection section)
 					element = section;
 				if (element is ShellSection shellsection && shellsection.Items.FirstOrDefault() is ShellContent content)
 					element = content;
@@ -602,7 +602,7 @@ namespace Xamarin.Forms
 			set => SetValue(GroupHeaderTemplateProperty, value);
 		}
 
-		public ShellItemCollection Items => (ShellItemCollection)GetValue(ItemsProperty);
+		public ShellCollection<ShellItem> Items => (ShellCollection<ShellItem>)GetValue(ItemsProperty);
 
 		public DataTemplate ItemTemplate {
 			get => (DataTemplate)GetValue(ItemTemplateProperty);
@@ -663,7 +663,7 @@ namespace Xamarin.Forms
 				{
 					IncrementGroup();
 
-					foreach (var shellSection in shellItem.Items)
+					foreach (var shellSection in shellItem.Sections)
 					{
 						if (shellSection.FlyoutDisplayOptions == FlyoutDisplayOptions.AsMultipleItems)
 						{
@@ -718,7 +718,7 @@ namespace Xamarin.Forms
 		{
 			base.OnChildAdded(child);
 
-			if (child is ShellItem shellItem && CurrentItem == null && !(child is MenuShellItem))
+			if (child is ShellItem shellItem && CurrentItem == null /*&& !(child is MenuShellItem)*/)
 			{
 				((IShellController)this).OnFlyoutItemSelected(shellItem);
 			}
@@ -786,7 +786,7 @@ namespace Xamarin.Forms
 			{
 				if (!isChecked && !baseItem.IsChecked)
 					return;
-				baseItem.SetValue(BaseShellItem.IsCheckedPropertyKey, isChecked);
+				baseItem.SetValue(Item.IsCheckedPropertyKey, isChecked);
 			}
 
 			if (root is Shell shell)
@@ -803,7 +803,7 @@ namespace Xamarin.Forms
 			else if (root is ShellItem shellItem)
 			{
 				var currentItem = shellItem.CurrentItem;
-				var items = shellItem.Items;
+				var items = shellItem.Sections;
 				var count = items.Count;
 				for (int i = 0; i < count; i++)
 				{

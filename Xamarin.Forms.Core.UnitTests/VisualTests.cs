@@ -31,7 +31,7 @@ namespace Xamarin.Forms.Core.UnitTests
 				{
 					new ShellItem()
 					{
-						Items =
+						Sections =
 						{
 							new ShellSection()
 							{
@@ -56,7 +56,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			shell.Items.Add(
 				new ShellItem()
 				{
-					Items =
+					Sections =
 						{
 							new ShellSection()
 							{
@@ -95,7 +95,7 @@ namespace Xamarin.Forms.Core.UnitTests
 				{
 					new ShellItem()
 					{
-						Items =
+						Sections =
 						{
 							new ShellSection()
 							{

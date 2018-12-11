@@ -8,30 +8,19 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	[ContentProperty("Items")]
 	public class ShellItem : ShellGroupItem, IShellItemController, IElementConfiguration<ShellItem>, IPropertyPropagationController
 	{
-		static readonly BindablePropertyKey ItemsPropertyKey =
-			BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellSectionCollection), typeof(ShellItem), null,
-				defaultValueCreator: bo => new ShellSectionCollection { Inner = new ElementCollection<ShellSection>(((ShellItem)bo)._children) });
+		readonly ObservableCollection<Element> _children = new ObservableCollection<Element>();
+		ReadOnlyCollection<Element> _logicalChildren;
+		Lazy<PlatformConfigurationRegistry<ShellItem>> _platformConfigurationRegistry;
 
-		public static readonly BindableProperty CurrentItemProperty =
-			BindableProperty.Create(nameof(CurrentItem), typeof(ShellSection), typeof(ShellItem), null, BindingMode.TwoWay,
-				propertyChanged: OnCurrentItemChanged);
+		public ShellSection CurrentItem => (ShellSection)_item.CurrentItem?.GetValue(ShellItemProperty);
+		public ShellCollection<ShellSection> Sections { get; }
 
-		public static readonly BindableProperty ItemsProperty = ItemsPropertyKey.BindableProperty;
-
-		public ShellSection CurrentItem
+		internal ShellItem(Item item) : base(item)
 		{
-			get => (ShellSection)GetValue(CurrentItemProperty);
-			set => SetValue(CurrentItemProperty, value);
-		}
-
-		public ShellSectionCollection Items => (ShellSectionCollection)GetValue(ItemsProperty);
-
-		public ShellItem()
-		{
-			((INotifyCollectionChanged)Items).CollectionChanged += ItemsCollectionChanged;
+			Sections = new ShellCollection<ShellSection> { Inner = new ElementCollection<ShellSection>(_children) };
+			((INotifyCollectionChanged)Sections).CollectionChanged += ItemsCollectionChanged;
 			_platformConfigurationRegistry = new Lazy<PlatformConfigurationRegistry<ShellItem>>(() => new PlatformConfigurationRegistry<ShellItem>(this));
 		}
 
@@ -39,16 +28,16 @@ namespace Xamarin.Forms
 		{
 			var shellSectionRoute = parts[0];
 
-			var items = Items;
-			for (int i = 0; i < items.Count; i++)
+			var sections = Sections;
+			for (int i = 0; i < sections.Count; i++)
 			{
-				var shellSection = items[i];
+				var shellSection = sections[i];
 				if (Routing.CompareRoutes(shellSection.Route, shellSectionRoute, out var isImplicit))
 				{
 					Shell.ApplyQueryAttributes(shellSection, queryData, parts.Count == 1);
 
 					if (CurrentItem != shellSection)
-						SetValueFromRenderer(CurrentItemProperty, shellSection);
+						_item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection._item);
 					if (!isImplicit)
 						parts.RemoveAt(0);
 					if (parts.Count > 0)
@@ -75,17 +64,14 @@ namespace Xamarin.Forms
 			);
 
 			if (accept && setValue)
-				SetValueFromRenderer(CurrentItemProperty, shellSection);
+				_item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection._item);
 
 			return accept;
 		}
 
 		void IPropertyPropagationController.PropagatePropertyChanged(string propertyName)
-			=> PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, Items);
+			=> PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, Sections);
 			
-		readonly ObservableCollection<Element> _children = new ObservableCollection<Element>();
-		ReadOnlyCollection<Element> _logicalChildren;
-		Lazy<PlatformConfigurationRegistry<ShellItem>> _platformConfigurationRegistry;
 
 		internal override ReadOnlyCollection<Element> LogicalChildrenInternal
 			=> _logicalChildren ?? (_logicalChildren = new ReadOnlyCollection<Element>(_children));
@@ -103,7 +89,7 @@ namespace Xamarin.Forms
 		{
 			base.OnChildAdded(child);
 			if (CurrentItem == null)
-				SetValueFromRenderer(CurrentItemProperty, child);
+				_item.SetValueFromRenderer(Item.CurrentItemProperty, (child as BaseShellItem)?._item);
 		}
 
 		protected override void OnChildRemoved(Element child)
@@ -112,10 +98,10 @@ namespace Xamarin.Forms
 			if (CurrentItem != child)
 				return;
 
-			if (Items.Count == 0)
-				ClearValue(CurrentItemProperty);
+			if (Sections.Count == 0)
+				_item.ClearValue(Item.CurrentItemProperty);
 			else
-				SetValueFromRenderer(CurrentItemProperty, Items[0]);
+				_item.SetValueFromRenderer(Item.CurrentItemProperty, Sections[0]._item);
 		}
 
 		static void OnCurrentItemChanged(BindableObject bindable, object oldValue, object newValue)
@@ -142,44 +128,39 @@ namespace Xamarin.Forms
 			SendStructureChanged();
 		}
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(ShellSection shellSection)
-		{
-			var result = new ShellItem {
-				Route = Routing.GenerateImplicitRoute(shellSection.Route),
-				Items = { shellSection },
-			};
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+//		public static implicit operator ShellItem(ShellSection shellSection)
+//		{
+//			var result = new ShellItem {
+//				Route = Routing.GenerateImplicitRoute(shellSection.Route),
+//				Items = { shellSection },
+//			};
 
-			result.SetBinding(TitleProperty, new Binding(nameof(Title), BindingMode.OneWay, source: shellSection));
-			result.SetBinding(IconProperty, new Binding(nameof(Icon), BindingMode.OneWay, source: shellSection));
-			result.SetBinding(FlyoutDisplayOptionsProperty, new Binding(nameof(FlyoutDisplayOptions), BindingMode.OneTime, source: shellSection));
-			return result;
-		}
+//			result.SetBinding(TitleProperty, new Binding(nameof(Title), BindingMode.OneWay, source: shellSection));
+//			result.SetBinding(IconProperty, new Binding(nameof(Icon), BindingMode.OneWay, source: shellSection));
+//			result.SetBinding(FlyoutDisplayOptionsProperty, new Binding(nameof(FlyoutDisplayOptions), BindingMode.OneTime, source: shellSection));
+//			return result;
+//		}
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(ShellContent shellContent)
-			=> (ShellSection)shellContent;
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+//		public static implicit operator ShellItem(ShellContent shellContent)
+//			=> (ShellSection)shellContent;
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(TemplatedPage page)
-			=> (ShellSection)(ShellContent)page;
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+//		public static implicit operator ShellItem(TemplatedPage page)
+//			=> (ShellSection)(ShellContent)page;
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(MenuItem menuItem)
-			=> new MenuShellItem(menuItem);
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+//		public static implicit operator ShellItem(MenuItem menuItem)
+//			=> new MenuShellItem(menuItem);
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellItem(Item menuItem)
-			=> menuItem.AsShellItem();
 	}
 }

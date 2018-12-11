@@ -74,7 +74,7 @@ namespace Xamarin.Forms.Platform.Android
 				}
 				else
 				{
-					var index = _shellItem.Items.IndexOf(_shellItem.CurrentItem);
+					var index = _shellItem.Sections.IndexOf(_shellItem.CurrentItem);
 					using (var menu = bottomView.Menu)
 						index = Math.Min(index, menu.Size() - 1);
 

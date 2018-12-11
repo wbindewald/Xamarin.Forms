@@ -120,9 +120,9 @@ namespace Xamarin.Forms.Platform.Android
 				bottomSheetLayout.LayoutParameters = bottomShellLP;
 			bottomSheetLayout.Orientation = Orientation.Vertical;
 			// handle the more tab
-			for (int i = 4; i < ShellItem.Items.Count; i++)
+			for (int i = 4; i < ShellItem.Sections.Count; i++)
 			{
-				var shellContent = ShellItem.Items[i];
+				var shellContent = ShellItem.Sections[i];
 
 				using (var innerLayout = new LinearLayout(Context))
 				{
@@ -192,7 +192,7 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnShellSectionChanged();
 
-			var index = ShellItem.Items.IndexOf(ShellSection);
+			var index = ShellItem.Sections.IndexOf(ShellSection);
 			using (var menu = _bottomView.Menu)
 			{
 				index = Math.Min(index, menu.Size() - 1);
@@ -227,7 +227,7 @@ namespace Xamarin.Forms.Platform.Android
 			}
 			else
 			{
-				var shellSection = ShellItem.Items[id];
+				var shellSection = ShellItem.Sections[id];
 				if (item.IsChecked)
 				{
 					OnTabReselected(shellSection);
@@ -265,9 +265,9 @@ namespace Xamarin.Forms.Platform.Android
 			if (e.PropertyName == BaseShellItem.IsEnabledProperty.PropertyName)
 			{
 				var content = (ShellSection)sender;
-				var index = ShellItem.Items.IndexOf(content);
+				var index = ShellItem.Sections.IndexOf(content);
 
-				var itemCount = ShellItem.Items.Count;
+				var itemCount = ShellItem.Sections.Count;
 				var maxItems = _bottomView.MaxItemCount;
 
 				if (itemCount > maxItems && index > maxItems - 2)
@@ -292,17 +292,17 @@ namespace Xamarin.Forms.Platform.Android
 		protected virtual async void SetupMenu(IMenu menu, int maxBottomItems, ShellItem shellItem)
 		{
 			menu.Clear();
-			bool showMore = ShellItem.Items.Count > maxBottomItems;
+			bool showMore = ShellItem.Sections.Count > maxBottomItems;
 
-			int end = showMore ? maxBottomItems - 1 : ShellItem.Items.Count;
+			int end = showMore ? maxBottomItems - 1 : ShellItem.Sections.Count;
 
-			var currentIndex = shellItem.Items.IndexOf(ShellSection);
+			var currentIndex = shellItem.Sections.IndexOf(ShellSection);
 
 			List<IMenuItem> menuItems = new List<IMenuItem>();
 			List<Task> loadTasks = new List<Task>();
 			for (int i = 0; i < end; i++)
 			{
-				var item = shellItem.Items[i];
+				var item = shellItem.Sections[i];
 				using (var title = new Java.Lang.String(item.Title))
 				{
 					var menuItem = menu.Add(0, i, 0, title);

@@ -155,9 +155,9 @@ namespace Xamarin.Forms.Platform.iOS
 
 		protected virtual void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == BaseShellItem.TitleProperty.PropertyName)
+			if (e.PropertyName == Item.TitleProperty.PropertyName)
 				UpdateTabBarItem();
-			else if (e.PropertyName == BaseShellItem.IconProperty.PropertyName)
+			else if (e.PropertyName == Item.IconProperty.PropertyName)
 				UpdateTabBarItem();
 		}
 

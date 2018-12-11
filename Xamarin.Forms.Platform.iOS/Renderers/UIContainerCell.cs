@@ -51,7 +51,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateVisualState()
 		{
-			if (BindingContext is BaseShellItem baseShellItem && baseShellItem != null)
+			if (BindingContext is BaseShellItem baseShellItem)
 			{
 				if (baseShellItem.IsChecked)
 					VisualStateManager.GoToState(View, "Selected");
@@ -62,10 +62,8 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == BaseShellItem.IsCheckedProperty.PropertyName)
-			{
+			if (e.PropertyName == Item.IsCheckedProperty.PropertyName)
 				UpdateVisualState();
-			}
 		}
 	}
 }

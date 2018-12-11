@@ -8,12 +8,11 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	[ContentProperty("Items")]
 	public class ShellSection : ShellGroupItem, IShellSectionController, IPropertyPropagationController
 	{
 		static readonly BindablePropertyKey ItemsPropertyKey =
-			BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellContentCollection), typeof(ShellSection), null,
-				defaultValueCreator: bo => new ShellContentCollection());
+			BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellCollection<ShellContent>), typeof(ShellSection), null,
+				defaultValueCreator: bo => new ShellCollection<ShellContent>());
 
 		public static readonly BindableProperty ItemsProperty = ItemsPropertyKey.BindableProperty;
 
@@ -27,7 +26,7 @@ namespace Xamarin.Forms
 			set => SetValue(CurrentItemProperty, value);
 		}
 
-		public ShellContentCollection Items => (ShellContentCollection)GetValue(ItemsProperty);
+		public ShellCollection<ShellContent> Items => (ShellCollection<ShellContent>)GetValue(ItemsProperty);
 
 		readonly List<(object Observer, Action<Page> Callback)> _displayedPageObservers =
 			new List<(object Observer, Action<Page> Callback)>();
@@ -142,7 +141,7 @@ namespace Xamarin.Forms
 
 		List<Page> _navStack = new List<Page> { null };
 
-		public ShellSection()
+		internal ShellSection(Item item) : base(item) 
 		{
 			((INotifyCollectionChanged)Items).CollectionChanged += ItemsCollectionChanged;
 			Navigation = new NavigationImpl(this);
@@ -169,26 +168,26 @@ namespace Xamarin.Forms
 
 		ShellItem ShellItem => Parent as ShellItem;
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellSection(ShellContent shellContent)
-		{
-			var shellSection = new ShellSection {
-				Route = Routing.GenerateImplicitRoute(shellContent.Route),
-				Items = { shellContent },
-			};
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+//		public static implicit operator ShellSection(ShellContent shellContent)
+//		{
+//			var shellSection = new ShellSection {
+//				Route = Routing.GenerateImplicitRoute(shellContent.Route),
+//				Items = { shellContent },
+//			};
 
-			shellSection.SetBinding(TitleProperty, new Binding("Title", BindingMode.OneWay, source: shellContent));
-			shellSection.SetBinding(IconProperty, new Binding("Icon", BindingMode.OneWay, source: shellContent));
-			return shellSection;
-		}
+//			shellSection.SetBinding(TitleProperty, new Binding("Title", BindingMode.OneWay, source: shellContent));
+//			shellSection.SetBinding(IconProperty, new Binding("Icon", BindingMode.OneWay, source: shellContent));
+//			return shellSection;
+//		}
 
-#if DEBUG
-		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
-#endif
-		public static implicit operator ShellSection(TemplatedPage page)
-			=> (ShellSection)(ShellContent)page;
+//#if DEBUG
+//		[Obsolete("Please dont use this in core code... its SUPER hard to debug when this happens", true)]
+//#endif
+		//public static implicit operator ShellSection(TemplatedPage page)
+			//=> (ShellSection)(ShellContent)page;
 
 		public virtual async Task GoToAsync(List<string> routes, IDictionary<string, string> queryData, bool animate)
 		{

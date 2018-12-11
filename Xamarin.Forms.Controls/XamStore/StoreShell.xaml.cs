@@ -9,7 +9,7 @@ using Xamarin.Forms.Xaml;
 
 namespace Xamarin.Forms.Controls.XamStore
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class StoreShell : Shell
 	{
 		public StoreShell ()

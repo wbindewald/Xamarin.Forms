@@ -88,7 +88,7 @@ namespace Xamarin.Forms
 		public object GetValue(BindableProperty property)
 		{
 			if (property == null)
-				throw new ArgumentNullException("property");
+				throw new ArgumentNullException(nameof(property));
 
 			BindablePropertyContext context = property.DefaultValueCreator != null ? GetOrCreateContext(property) : GetContext(property);
 

@@ -1,14 +1,12 @@
 ﻿namespace Xamarin.Forms
 {
-	public class ShellGroupItem : BaseShellItem
+	//we probably could get rid of this class
+	public abstract class ShellGroupItem : BaseShellItem
 	{
-		public static readonly BindableProperty FlyoutDisplayOptionsProperty =
-			BindableProperty.Create(nameof(FlyoutDisplayOptions), typeof(FlyoutDisplayOptions), typeof(ShellItem), FlyoutDisplayOptions.AsSingleItem, BindingMode.OneTime);
-
-		public FlyoutDisplayOptions FlyoutDisplayOptions
+		internal ShellGroupItem(Item item) : base(item)
 		{
-			get { return (FlyoutDisplayOptions)GetValue(FlyoutDisplayOptionsProperty); }
-			set { SetValue(FlyoutDisplayOptionsProperty, value); }
 		}
+
+		public FlyoutDisplayOptions FlyoutDisplayOptions => _item.FlyoutDisplayOptions;
 	}
 }

@@ -122,13 +122,13 @@ namespace Xamarin.Forms.Controls.XamStore
 					() => Shell.SetBackButtonBehavior(this, null)),
 				1, 7);
 
-			grid.Children.Add(MakeButton("Disable Tab",
-					() => ((Forms.ShellSection)Parent.Parent).IsEnabled = false),
-				2, 7);
+			//grid.Children.Add(MakeButton("Disable Tab",
+			//		() => ((Forms.ShellSection)Parent.Parent).IsEnabled = false),
+			//	2, 7);
 
-			grid.Children.Add(MakeButton("Enable Tab",
-					() => ((Forms.ShellSection)Parent.Parent).IsEnabled = true),
-				0, 8);
+			//grid.Children.Add(MakeButton("Enable Tab",
+				//	() => ((Forms.ShellSection)Parent.Parent).IsEnabled = true),
+				//0, 8);
 
 			grid.Children.Add(MakeButton("Enable Search",
 					() => Shell.GetSearchHandler(this).IsSearchEnabled = true),
@@ -142,17 +142,17 @@ namespace Xamarin.Forms.Controls.XamStore
 					() => Title = "New Title"),
 				0, 9);
 
-			grid.Children.Add(MakeButton("Set Tab Title",
-					() => ((Forms.ShellSection)Parent.Parent).Title = "New Title"),
-				1, 9);
+			//grid.Children.Add(MakeButton("Set Tab Title",
+			//		() => ((Forms.ShellSection)Parent.Parent).Title = "New Title"),
+			//	1, 9);
 
-			grid.Children.Add(MakeButton("Set GroupTitle",
-					() => ((ShellItem)Parent.Parent.Parent).Title = "New Title"),
-				2, 9);
+			//grid.Children.Add(MakeButton("Set GroupTitle",
+			//		() => ((ShellItem)Parent.Parent.Parent).Title = "New Title"),
+			//	2, 9);
 
-			grid.Children.Add(MakeButton("New Tab Icon",
-					() => ((Forms.ShellSection)Parent.Parent).Icon = "calculator.png"),
-				0, 10);
+			//grid.Children.Add(MakeButton("New Tab Icon",
+				//	() => ((Forms.ShellSection)Parent.Parent).Icon = "calculator.png"),
+				//0, 10);
 
 			grid.Children.Add(MakeButton("Flyout Disabled",
 					() => Shell.SetFlyoutBehavior(this, FlyoutBehavior.Disabled)),
@@ -243,37 +243,37 @@ namespace Xamarin.Forms.Controls.XamStore
 		private void AddTopTab()
 		{
 			var shellSection = (ShellSection)Parent.Parent;
-			shellSection.Items.Add(
-				new Forms.ShellContent()
-					{
-						Title = "New Top Tab",
-						Content = new UpdatesPage()
-					}
-				);
+			//shellSection.Items.Add(
+				//new Forms.ShellContent()
+				//	{
+				//		Title = "New Top Tab",
+				//		Content = new UpdatesPage()
+				//	}
+				//);
 		}
 
 		private void RemoveBottomTab()
 		{
 			var shellitem = (ShellItem)Parent.Parent.Parent;
-			shellitem.Items.Remove(shellitem.Items[shellitem.Items.Count - 1]);
+			shellitem.Sections.Remove(shellitem.Sections[shellitem.Sections.Count - 1]);
 		}
 
 		private void AddBottomTab()
 		{
 			var shellitem = (ShellItem)Parent.Parent.Parent;
-			shellitem.Items.Add(new ShellSection
-			{
-				Route = "newitem",
-				Title = "New Item",
-				Icon = "calculator.png",
-				Items =
-				{
-					new Forms.ShellContent()
-					{
-						Content = new UpdatesPage()
-					}
-				}
-			});
+			//shellitem.Items.Add(new ShellSection
+			//{
+			//	Route = "newitem",
+			//	Title = "New Item",
+			//	Icon = "calculator.png",
+			//	Items =
+			//	{
+			//		new Forms.ShellContent()
+			//		{
+			//			Content = new UpdatesPage()
+			//		}
+			//	}
+			//});
 		}
 
 		private class CustomSearchHandler : SearchHandler

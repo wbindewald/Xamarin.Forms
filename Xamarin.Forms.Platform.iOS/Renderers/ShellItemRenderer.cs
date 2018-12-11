@@ -116,7 +116,7 @@ namespace Xamarin.Forms.Platform.iOS
 				_sectionRenderers.Clear();
 				ShellItem.PropertyChanged -= OnElementPropertyChanged;
 				((IShellController)_context.Shell).RemoveAppearanceObserver(this);
-				((INotifyCollectionChanged)ShellItem.Items).CollectionChanged -= OnItemsCollectionChanged;
+				((INotifyCollectionChanged)ShellItem.Sections).CollectionChanged -= OnItemsCollectionChanged;
 
 				CurrentRenderer = null;
 				_shellItem = null;
@@ -150,7 +150,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (e.NewItems != null && e.NewItems.Count > 0)
 			{
-				var count = ShellItem.Items.Count;
+				var count = ShellItem.Sections.Count;
 				UIViewController[] viewControllers = new UIViewController[count];
 
 				int maxTabs = 5; // fetch this a better way
@@ -159,9 +159,9 @@ namespace Xamarin.Forms.Platform.iOS
 				int i = 0;
 				bool goTo = false; // its possible we are in a transitionary state and should not nav
 				var current = ShellItem.CurrentItem;
-				for (int j = 0; j < ShellItem.Items.Count; j++)
+				for (int j = 0; j < ShellItem.Sections.Count; j++)
 				{
-					var shellContent = ShellItem.Items[j];
+					var shellContent = ShellItem.Sections[j];
 					var renderer = RendererForShellContent(shellContent) ?? _context.CreateShellSectionRenderer(shellContent);
 
 					if (willUseMore && j >= maxTabs - 1)
@@ -191,7 +191,7 @@ namespace Xamarin.Forms.Platform.iOS
 			_appearanceTracker = _context.CreateTabBarAppearanceTracker();
 			shellItem.PropertyChanged += OnElementPropertyChanged;
 			((IShellController)_context.Shell).AddAppearanceObserver(this, shellItem);
-			((INotifyCollectionChanged)shellItem.Items).CollectionChanged += OnItemsCollectionChanged;
+			((INotifyCollectionChanged)shellItem.Sections).CollectionChanged += OnItemsCollectionChanged;
 		}
 
 		protected virtual void OnShellSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -225,13 +225,13 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void CreateTabRenderers()
 		{
-			var count = ShellItem.Items.Count;
+			var count = ShellItem.Sections.Count;
 			int maxTabs = 5; // fetch this a better way
 			bool willUseMore = count > maxTabs;
 
 			UIViewController[] viewControllers = new UIViewController[count];
 			int i = 0;
-			foreach (var shellContent in ShellItem.Items)
+			foreach (var shellContent in ShellItem.Sections)
 			{
 				var renderer = _context.CreateShellSectionRenderer(shellContent);
 
@@ -361,7 +361,7 @@ namespace Xamarin.Forms.Platform.iOS
 				return;
 
 			var hidden = !Shell.GetTabBarIsVisible(_displayedPage);
-			if (ShellItem.Items.Count > 1)
+			if (ShellItem.Sections.Count > 1)
 			{
 				SetTabBarHidden(hidden);
 			}

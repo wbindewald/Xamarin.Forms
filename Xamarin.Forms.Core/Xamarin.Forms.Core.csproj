@@ -13,6 +13,8 @@
 		<Compile Remove="Internals\Legacy\**" />
 		<EmbeddedResource Remove="Internals\Legacy\**" />
 		<None Remove="Internals\Legacy\**" />
+		<Compile Remove="Shell\ShellItemCollection.cs" />
+		<Compile Remove="Shell\ShellContentCollection.cs" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.0' ">
 		<Compile Include="Internals\Legacy\**" />

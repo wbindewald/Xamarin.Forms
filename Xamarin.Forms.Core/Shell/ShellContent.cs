@@ -10,7 +10,6 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	[ContentProperty("Content")]
 	public class ShellContent : BaseShellItem, IShellContentController
 	{
 		static readonly BindablePropertyKey MenuItemsPropertyKey =
@@ -40,7 +39,7 @@ namespace Xamarin.Forms
 			set => SetValue(ContentTemplateProperty, value);
 		}
 
-		public ShellContent()
+		internal ShellContent(Item item) : base(item)
 		{
 			((INotifyCollectionChanged)MenuItems).CollectionChanged += MenuItemsCollectionChanged;
 		}
@@ -100,20 +99,20 @@ namespace Xamarin.Forms
 			}
 		}
 
-		public static implicit operator ShellContent(TemplatedPage page)
-		{
-			var shellContent = new ShellContent();
+		//public static implicit operator ShellContent(TemplatedPage page)
+		//{
+		//	var shellContent = new ShellContent();
 
-			var pageRoute = Routing.GetRoute(page);
+		//	var pageRoute = Routing.GetRoute(page);
 
-			shellContent.Route = Routing.GenerateImplicitRoute(pageRoute);
+		//	shellContent.Route = Routing.GenerateImplicitRoute(pageRoute);
 
-			shellContent.Content = page;
-			shellContent.SetBinding(TitleProperty, new Binding("Title", BindingMode.OneWay, source: page));
-			shellContent.SetBinding(IconProperty, new Binding("Icon", BindingMode.OneWay, source: page));
+		//	shellContent.Content = page;
+		//	shellContent.SetBinding(TitleProperty, new Binding("Title", BindingMode.OneWay, source: page));
+		//	shellContent.SetBinding(IconProperty, new Binding("Icon", BindingMode.OneWay, source: page));
 
-			return shellContent;
-		}
+		//	return shellContent;
+		//}
 
 		static void OnContentChanged(BindableObject bindable, object oldValue, object newValue)
 		{

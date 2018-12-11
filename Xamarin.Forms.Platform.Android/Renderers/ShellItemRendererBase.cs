@@ -245,10 +245,10 @@ namespace Xamarin.Forms.Platform.Android
 		protected virtual void HookEvents(ShellItem shellItem)
 		{
 			shellItem.PropertyChanged += OnShellItemPropertyChanged;
-			((INotifyCollectionChanged)shellItem.Items).CollectionChanged += OnShellItemsChanged;
+			((INotifyCollectionChanged)shellItem.Sections).CollectionChanged += OnShellItemsChanged;
 			ShellSection = shellItem.CurrentItem;
 
-			foreach (var shellContent in shellItem.Items)
+			foreach (var shellContent in shellItem.Sections)
 			{
 				HookChildEvents(shellContent);
 			}
@@ -316,12 +316,12 @@ namespace Xamarin.Forms.Platform.Android
 
 		protected virtual void UnhookEvents(ShellItem shellItem)
 		{
-			foreach (var shellSection in shellItem.Items)
+			foreach (var shellSection in shellItem.Sections)
 			{
 				UnhookChildEvents(shellSection);
 			}
 
-			((INotifyCollectionChanged)shellItem.Items).CollectionChanged -= OnShellItemsChanged;
+			((INotifyCollectionChanged)shellItem.Sections).CollectionChanged -= OnShellItemsChanged;
 			ShellItem.PropertyChanged -= OnShellItemPropertyChanged;
 			ShellSection = null;
 		}
