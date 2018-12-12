@@ -10,7 +10,7 @@ namespace Xamarin.Forms
 			BindableProperty.Create("_ShellItem", typeof(BaseShellItem), typeof(BaseShellItem), default(BaseShellItem));
 
 		internal readonly Item _item;
-		internal BaseShellItem(Item item)
+		private protected BaseShellItem(Item item)
 		{
 			_item = item ?? throw new ArgumentNullException(nameof(item));
 			_item.SetValue(ShellItemProperty, this);
