@@ -31,15 +31,11 @@ namespace Xamarin.Forms
 
 		public static readonly BindableProperty RouteProperty =
 			BindableProperty.CreateAttached("Route", typeof(string), typeof(Routing), null, 
-				defaultValueCreator: CreateDefaultRoute);
+				defaultValueCreator: bo => bo.GetType().Name + ++s_routeCount);
 
 		public static string GetRoute(Element obj) => (string)obj.GetValue(RouteProperty);
 		public static void SetRoute(Element obj, string value) => obj.SetValue(RouteProperty, value);
 
-		static object CreateDefaultRoute(BindableObject bindable)
-		{
-			return bindable.GetType().Name + ++s_routeCount;
-		}
 
 		public static Element GetOrCreateContent(string route)
 		{
