@@ -406,7 +406,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			Shell shell = new Shell()
 			{
 				FlyoutHeader = flyout,
-				Items =
+				ShellItems =
 				{
 					new ShellItem()
 					{
@@ -467,7 +467,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			Shell shell = new Shell()
 			{
 				Visual = Forms.VisualMarker.Default,
-				Items =
+				ShellItems =
 				{
 					new ShellItem()
 					{
@@ -493,7 +493,7 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			shell.FlowDirection = FlowDirection.RightToLeft;
 			shell.FlyoutHeader = flyout;
-			shell.Items.Add(
+			shell.ShellItems.Add(
 				new ShellItem()
 				{
 					Sections =

@@ -14,7 +14,7 @@ namespace Xamarin.Forms
 		ReadOnlyCollection<Element> _logicalChildren;
 		Lazy<PlatformConfigurationRegistry<ShellItem>> _platformConfigurationRegistry;
 
-		public ShellSection CurrentItem => (ShellSection)_item.CurrentItem?.GetValue(ShellItemProperty);
+		public ShellSection CurrentItem => (ShellSection)Item.CurrentItem?.GetValue(ShellItemProperty);
 		public ShellCollection<ShellSection> Sections { get; }
 
 		internal ShellItem(Item item) : base(item)
@@ -37,7 +37,7 @@ namespace Xamarin.Forms
 					Shell.ApplyQueryAttributes(shellSection, queryData, parts.Count == 1);
 
 					if (CurrentItem != shellSection)
-						_item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection._item);
+						Item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection.Item);
 					if (!isImplicit)
 						parts.RemoveAt(0);
 					if (parts.Count > 0)
@@ -64,7 +64,7 @@ namespace Xamarin.Forms
 			);
 
 			if (accept && setValue)
-				_item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection._item);
+				Item.SetValueFromRenderer(Item.CurrentItemProperty, shellSection.Item);
 
 			return accept;
 		}
@@ -89,7 +89,7 @@ namespace Xamarin.Forms
 		{
 			base.OnChildAdded(child);
 			if (CurrentItem == null)
-				_item.SetValueFromRenderer(Item.CurrentItemProperty, (child as BaseShellItem)?._item);
+				Item.SetValueFromRenderer(Item.CurrentItemProperty, (child as BaseShellItem)?.Item);
 		}
 
 		protected override void OnChildRemoved(Element child)
@@ -99,9 +99,9 @@ namespace Xamarin.Forms
 				return;
 
 			if (Sections.Count == 0)
-				_item.ClearValue(Item.CurrentItemProperty);
+				Item.ClearValue(Item.CurrentItemProperty);
 			else
-				_item.SetValueFromRenderer(Item.CurrentItemProperty, Sections[0]._item);
+				Item.SetValueFromRenderer(Item.CurrentItemProperty, Sections[0].Item);
 		}
 
 		static void OnCurrentItemChanged(BindableObject bindable, object oldValue, object newValue)

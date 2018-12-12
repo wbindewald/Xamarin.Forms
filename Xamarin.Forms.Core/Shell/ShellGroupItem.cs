@@ -7,6 +7,6 @@
 		{
 		}
 
-		public FlyoutDisplayOptions FlyoutDisplayOptions => _item.FlyoutDisplayOptions;
+		public FlyoutDisplayOptions FlyoutDisplayOptions => Item.FlyoutDisplayOptions;
 	}
 }

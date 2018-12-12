@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Xamarin.Forms
 {
-	internal static class ExperimentalFlags
+	static class ExperimentalFlags
 	{
-		internal const string CollectionViewExperimental = "CollectionView_Experimental";
-		internal const string VisualExperimental = "Visual_Experimental";
-		internal const string ShellExperimental = "Shell_Experimental";
+		public const string CollectionViewExperimental = "CollectionView_Experimental";
+		public const string VisualExperimental = "Visual_Experimental";
+		public const string ShellExperimental = "Shell_Experimental";
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void VerifyFlagEnabled(

@@ -21,7 +21,7 @@ namespace Xamarin.Forms.Core.UnitTests
 		{
 			var shell = new Shell();
 
-			Assert.IsEmpty(shell.Items);
+			Assert.IsEmpty(shell.ShellItems);
 			Assert.IsEmpty(shell.MenuItems);
 		}
 
@@ -34,7 +34,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellContent = new ShellContent { Content = new ContentPage() };
 			shellSection.Items.Add(shellContent);
 			shellItem.Sections.Add(shellSection);
-			shell.Items.Add(shellItem);
+			shell.ShellItems.Add(shellItem);
 
 			Assert.That(shell.CurrentItem, Is.EqualTo(shellItem));
 		}
@@ -49,7 +49,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellContent = new ShellContent { Content = page };
 			shellSection.Items.Add(shellContent);
 			shellItem.Sections.Add(shellSection);
-			shell.Items.Add(shellItem);
+			shell.ShellItems.Add(shellItem);
 
 			NavigationProxy proxy = page.NavigationProxy.Inner as NavigationProxy;
 			Assert.IsNotNull(proxy);
@@ -68,11 +68,11 @@ namespace Xamarin.Forms.Core.UnitTests
 			var shellContent = new ShellContent { Content = new ContentPage() };
 			shellSection.Items.Add(shellContent);
 			shellItem.Sections.Add(shellSection);
-			shell.Items.Add(shellItem);
+			shell.ShellItems.Add(shellItem);
 
 			Assume.That(shell.CurrentItem, Is.EqualTo(shellItem));
 
-			shell.Items.Add(new ShellItem());
+			shell.ShellItems.Add(new ShellItem());
 
 			Assert.AreEqual(shellItem, shell.CurrentItem);
 		}
@@ -117,8 +117,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			two.Sections.Add(tabthree);
 			two.Sections.Add(tabfour);
 
-			shell.Items.Add(one);
-			shell.Items.Add(two);
+			shell.ShellItems.Add(one);
+			shell.ShellItems.Add(two);
 
 			Assert.That(shell.CurrentState.Location.ToString(), Is.EqualTo("app:///s/one/tabone/content/"));
 
@@ -197,8 +197,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			one.Sections.Add(tabone);
 			two.Sections.Add(tabfour);
 
-			shell.Items.Add(one);
-			shell.Items.Add(two);
+			shell.ShellItems.Add(one);
+			shell.ShellItems.Add(two);
 
 			ShellTestPage pagetoTest = new ShellTestPage();
 			await shell.GoToAsync(new ShellNavigationState($"app:///s/two/tabfour/content?{nameof(ShellTestPage.SomeQueryParameter)}=1234"));
@@ -231,8 +231,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			one.Sections.Add(tabone);
 			two.Sections.Add(tabfour);
 
-			shell.Items.Add(one);
-			shell.Items.Add(two);
+			shell.ShellItems.Add(one);
+			shell.ShellItems.Add(two);
 
 			await shell.GoToAsync(new ShellNavigationState($"app:///s/two/tabfour/content?{nameof(ShellTestPage.SomeQueryParameter)}=1234"));
 			Assert.AreEqual("1234", (two.CurrentItem.CurrentItem.Content as ShellTestPage).SomeQueryParameter);
@@ -259,8 +259,8 @@ namespace Xamarin.Forms.Core.UnitTests
 			two.Sections.Add(tabthree);
 			two.Sections.Add(tabfour);
 
-			shell.Items.Add(one);
-			shell.Items.Add(two);
+			shell.ShellItems.Add(one);
+			shell.ShellItems.Add(two);
 
 			Assume.That(shell.CurrentState.Location.ToString(), Is.EqualTo("app:///s/one/tabone/content/"));
 

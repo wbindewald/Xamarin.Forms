@@ -34,13 +34,13 @@ namespace Xamarin.Forms
 			BindableProperty.Create(nameof(FlyoutDisplayOptions), typeof(FlyoutDisplayOptions), typeof(Item), FlyoutDisplayOptions.AsSingleItem, BindingMode.OneTime);
 
 		public static readonly BindableProperty IconProperty =
-			BindableProperty.Create(nameof(Icon), typeof(ImageSource), typeof(BaseShellItem), null, BindingMode.OneWay);
+			BindableProperty.Create(nameof(Icon), typeof(ImageSource), typeof(Item), null, BindingMode.OneWay);
 
 		public static readonly BindableProperty TitleProperty =
-			BindableProperty.Create(nameof(Title), typeof(string), typeof(BaseShellItem), null, BindingMode.OneTime);
+			BindableProperty.Create(nameof(Title), typeof(string), typeof(Item), null, BindingMode.OneTime);
 
-		public ShellSection CurrentItem {
-			get => (ShellSection)GetValue(CurrentItemProperty);
+		public Item CurrentItem {
+			get => (Item)GetValue(CurrentItemProperty);
 			set => SetValue(CurrentItemProperty, value);
 		}
 

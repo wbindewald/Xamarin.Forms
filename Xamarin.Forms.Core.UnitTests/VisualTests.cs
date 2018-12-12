@@ -27,7 +27,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			Shell shell = new Shell()
 			{
 				Visual = Forms.VisualMarker.Default,
-				Items =
+				ShellItems =
 				{
 					new ShellItem()
 					{
@@ -53,7 +53,7 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			shell.Visual = VisualMarker.Material;
 			shell.FlyoutHeader = flyout;
-			shell.Items.Add(
+			shell.ShellItems.Add(
 				new ShellItem()
 				{
 					Sections =
@@ -91,7 +91,7 @@ namespace Xamarin.Forms.Core.UnitTests
 				
 				Visual = Forms.VisualMarker.Default,
 				FlyoutHeader = flyout,
-				Items =
+				ShellItems =
 				{
 					new ShellItem()
 					{

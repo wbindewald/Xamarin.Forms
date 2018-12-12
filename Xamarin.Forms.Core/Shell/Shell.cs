@@ -12,7 +12,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	[ContentProperty(nameof(Items))]
+	[ContentProperty(nameof(ShellItems))]
 	public class Shell : Page, IShellController, IPropertyPropagationController
 	{
 		public static readonly BindableProperty BackButtonBehaviorProperty =
@@ -35,8 +35,7 @@ namespace Xamarin.Forms
 			BindableProperty.CreateAttached("TabBarIsVisible", typeof(bool), typeof(Shell), true);
 
 		public static readonly BindableProperty TitleViewProperty =
-			BindableProperty.CreateAttached("TitleView", typeof(View), typeof(Shell), null,
-				propertyChanged: OnTitleViewChanged);
+			BindableProperty.CreateAttached("TitleView", typeof(View), typeof(Shell), null, propertyChanged: OnTitleViewChanged);
 
 		public static BackButtonBehavior GetBackButtonBehavior(BindableObject obj) => (BackButtonBehavior)obj.GetValue(BackButtonBehaviorProperty);
 		public static void SetBackButtonBehavior(BindableObject obj, BackButtonBehavior behavior) => obj.SetValue(BackButtonBehaviorProperty, behavior);
@@ -159,7 +158,7 @@ namespace Xamarin.Forms
 		static readonly BindablePropertyKey CurrentStatePropertyKey =
 			BindableProperty.CreateReadOnly(nameof(CurrentState), typeof(ShellNavigationState), typeof(Shell), null);
 
-		static readonly BindablePropertyKey ItemsPropertyKey = BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellCollection<ShellItem>), typeof(Shell), null,
+		static readonly BindablePropertyKey ShellItemsPropertyKey = BindableProperty.CreateReadOnly(nameof(ShellItems), typeof(ShellCollection<ShellItem>), typeof(Shell), null,
 				defaultValueCreator: bo => new ShellCollection<ShellItem> { Inner = new ElementCollection<ShellItem>(((Shell)bo).InternalChildren) });
 
 		List<(IAppearanceObserver Observer, Element Pivot)> _appearanceObservers = new List<(IAppearanceObserver Observer, Element Pivot)>();
@@ -384,7 +383,7 @@ namespace Xamarin.Forms
 			var shellItemRoute = parts[0];
 			ApplyQueryAttributes(this, queryData, false);
 
-			var items = Items;
+			var items = ShellItems;
 			for (int i = 0; i < items.Count; i++)
 			{
 				var shellItem = items[i];
@@ -534,7 +533,7 @@ namespace Xamarin.Forms
 		public static readonly BindableProperty GroupHeaderTemplateProperty =
 			BindableProperty.Create(nameof(GroupHeaderTemplate), typeof(DataTemplate), typeof(Shell), null, BindingMode.OneTime);
 
-		public static readonly BindableProperty ItemsProperty = ItemsPropertyKey.BindableProperty;
+		public static readonly BindableProperty ShellItemsProperty = ShellItemsPropertyKey.BindableProperty;
 
 		public static readonly BindableProperty ItemTemplateProperty =
 			BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(Shell), null, BindingMode.OneTime);
@@ -545,16 +544,8 @@ namespace Xamarin.Forms
 
 		public Shell()
 		{
-			VerifyShellFlagEnabled(constructorHint: nameof(Shell));
-			((INotifyCollectionChanged)Items).CollectionChanged += (s, e) => SendStructureChanged();
-		}
-
-		internal const string ShellExperimental = ExperimentalFlags.ShellExperimental;
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal static void VerifyShellFlagEnabled(string constructorHint = null, [CallerMemberName] string memberName = "")
-		{
-			ExperimentalFlags.VerifyFlagEnabled("Shell", ShellExperimental, constructorHint, memberName);
+			ExperimentalFlags.VerifyFlagEnabled("Shell", ExperimentalFlags.ShellExperimental, constructorHint: nameof(Shell));
+			((INotifyCollectionChanged)ShellItems).CollectionChanged += (s, e) => SendStructureChanged();
 		}
 
 		public event EventHandler<ShellNavigatedEventArgs> Navigated;
@@ -602,7 +593,7 @@ namespace Xamarin.Forms
 			set => SetValue(GroupHeaderTemplateProperty, value);
 		}
 
-		public ShellCollection<ShellItem> Items => (ShellCollection<ShellItem>)GetValue(ItemsProperty);
+		public ShellCollection<ShellItem> ShellItems => (ShellCollection<ShellItem>)GetValue(ShellItemsProperty);
 
 		public DataTemplate ItemTemplate {
 			get => (DataTemplate)GetValue(ItemTemplateProperty);
@@ -657,7 +648,7 @@ namespace Xamarin.Forms
 				}
 			}
 
-			foreach (var shellItem in Items)
+			foreach (var shellItem in ShellItems)
 			{
 				if (shellItem.FlyoutDisplayOptions == FlyoutDisplayOptions.AsMultipleItems)
 				{
@@ -728,9 +719,9 @@ namespace Xamarin.Forms
 		{
 			base.OnChildRemoved(child);
 
-			if (child == CurrentItem && Items.Count > 0)
+			if (child == CurrentItem && ShellItems.Count > 0)
 			{
-				((IShellController)this).OnFlyoutItemSelected(Items[0]);
+				((IShellController)this).OnFlyoutItemSelected(ShellItems[0]);
 			}
 		}
 
@@ -792,7 +783,7 @@ namespace Xamarin.Forms
 			if (root is Shell shell)
 			{
 				ShellItem currentItem = shell.CurrentItem;
-				var items = shell.Items;
+				var items = shell.ShellItems;
 				var count = items.Count;
 				for (int i = 0; i < count; i++)
 				{

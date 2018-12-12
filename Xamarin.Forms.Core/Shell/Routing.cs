@@ -33,6 +33,9 @@ namespace Xamarin.Forms
 			BindableProperty.CreateAttached("Route", typeof(string), typeof(Routing), null, 
 				defaultValueCreator: CreateDefaultRoute);
 
+		public static string GetRoute(Element obj) => (string)obj.GetValue(RouteProperty);
+		public static void SetRoute(Element obj, string value) => obj.SetValue(RouteProperty, value);
+
 		static object CreateDefaultRoute(BindableObject bindable)
 		{
 			return bindable.GetType().Name + ++s_routeCount;
@@ -59,11 +62,8 @@ namespace Xamarin.Forms
 			return result;
 		}
 
-		public static string GetRoute(Element obj)
-		{
-			return (string)obj.GetValue(RouteProperty);
-		}
 
+		//RegisterRoute and ValidateRoute are untested code paths
 		public static void RegisterRoute(string route, RouteFactory factory)
 		{
 			if (!ValidateRoute(route))
@@ -80,11 +80,6 @@ namespace Xamarin.Forms
 			s_routes[route] = new TypeRouteFactory(type);
 		}
 
-		public static void SetRoute(Element obj, string value)
-		{
-			obj.SetValue(RouteProperty, value);
-		}
-
 		static bool ValidateRoute(string route)
 		{
 			// Honestly this could probably be expanded to allow any URI allowable character
@@ -98,15 +93,9 @@ namespace Xamarin.Forms
 		{
 			readonly Type _type;
 
-			public TypeRouteFactory(Type type)
-			{
-				_type = type;
-			}
+			public TypeRouteFactory(Type type) => _type = type;
 
-			public override Element GetOrCreate()
-			{
-				return (Element)Activator.CreateInstance(_type);
-			}
+			public override Element GetOrCreate() => (Element)Activator.CreateInstance(_type);
 		}
 	}
 }

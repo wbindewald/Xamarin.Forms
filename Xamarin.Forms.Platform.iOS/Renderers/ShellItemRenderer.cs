@@ -64,7 +64,7 @@ namespace Xamarin.Forms.Platform.iOS
 				var renderer = RendererForViewController(value);
 				if (renderer != null)
 				{
-					ShellItem.SetValueFromRenderer(ShellItem.CurrentItemProperty, renderer.ShellSection);
+					ShellItem.Item.SetValueFromRenderer(Item.CurrentItemProperty, renderer.ShellSection.Item);
 					CurrentRenderer = renderer;
 				}
 			}
@@ -127,10 +127,8 @@ namespace Xamarin.Forms.Platform.iOS
 
 		protected virtual void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == ShellItem.CurrentItemProperty.PropertyName)
-			{
+			if (e.PropertyName == Item.CurrentItemProperty.PropertyName)
 				GoTo(ShellItem.CurrentItem);
-			}
 		}
 
 		protected virtual void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -196,7 +194,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		protected virtual void OnShellSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == BaseShellItem.IsEnabledProperty.PropertyName)
+			if (e.PropertyName == Item.IsEnabledProperty.PropertyName)
 			{
 				var shellSection = (ShellSection)sender;
 				var renderer = RendererForShellContent(shellSection);

@@ -9,29 +9,28 @@ namespace Xamarin.Forms
 		internal static readonly BindableProperty ShellItemProperty =
 			BindableProperty.Create("_ShellItem", typeof(BaseShellItem), typeof(BaseShellItem), default(BaseShellItem));
 
-		internal readonly Item _item;
+		public Item Item { get; }
+
 		private protected BaseShellItem(Item item)
 		{
-			_item = item ?? throw new ArgumentNullException(nameof(item));
-			_item.SetValue(ShellItemProperty, this);
+			Item = item ?? throw new ArgumentNullException(nameof(item));
+			Item.SetValue(ShellItemProperty, this);
 			item.PropertyChanged += (s, e) => OnPropertyChanged(e.PropertyName);
 		}
 
-		public bool IsChecked => _item.IsChecked;
-		public ImageSource Icon => _item.Icon;
-		public string Route => _item.Route;
-		public string Title => _item.Title;
-		public bool IsEnabled => _item.IsEnabled;
+		public bool IsChecked => Item.IsChecked;
+		public ImageSource Icon => Item.Icon;
+		public string Route => Item.Route;
+		public string Title => Item.Title;
+		public bool IsEnabled => Item.IsEnabled;
 
 		//Overriding those will allow renderers to access properties set on the Item as if they were properties
 		//of the BaseShellItem themselves. We do not care (much) about overriding SetBinding() as this type is not
 		//meant to be used by the users.
-		public new void SetValue(BindableProperty property, object value) => _item.SetValue(property, value);
-		public new void SetValue(BindablePropertyKey propertyKey, object value) => _item.SetValue(propertyKey, value);
-		public new object GetValue(BindableProperty property) => _item.GetValue(property);
-		public new void SetValueFromRenderer(BindableProperty property, object value) => _item.SetValueFromRenderer(property, value);
-
-
+		public new void SetValue(BindableProperty property, object value) => Item.SetValue(property, value);
+		public new void SetValue(BindablePropertyKey propertyKey, object value) => Item.SetValue(propertyKey, value);
+		public new object GetValue(BindableProperty property) => Item.GetValue(property);
+		public new void SetValueFromRenderer(BindableProperty property, object value) => Item.SetValueFromRenderer(property, value);
 
 		//TODO, review everything below this line
 		IVisual _effectiveVisual = Xamarin.Forms.VisualMarker.Default;
