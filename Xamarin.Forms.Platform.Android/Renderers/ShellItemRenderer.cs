@@ -48,6 +48,7 @@ namespace Xamarin.Forms.Platform.Android
 		FrameLayout _navigationArea;
 		AView _outerLayout;
 		IShellBottomNavViewAppearanceTracker _appearanceTracker;
+		BottomNavigationViewTracker _bottomNavigationTracker;
 
 		public ShellItemRenderer(IShellContext shellContext) : base(shellContext)
 		{
@@ -68,6 +69,7 @@ namespace Xamarin.Forms.Platform.Android
 			SetupMenu();
 
 			_appearanceTracker = ShellContext.CreateBottomNavViewAppearanceTracker(ShellItem);
+			_bottomNavigationTracker = new BottomNavigationViewTracker();
 			((IShellController)ShellContext.Shell).AddAppearanceObserver(this, ShellItem);
 
 			return _outerLayout;
@@ -108,11 +110,10 @@ namespace Xamarin.Forms.Platform.Android
 
 		protected virtual Drawable CreateItemBackgroundDrawable()
 		{
-			var stateList = ColorStateList.ValueOf(Color.Black.MultiplyAlpha(0.2).ToAndroid());
-			return new RippleDrawable(stateList, new ColorDrawable(AColor.White), null);
+			return BottomNavigationViewUtils.CreateItemBackgroundDrawable();
 		}
 
-		protected virtual BottomSheetDialog CreateMoreBottomSheet(Action<ShellSection, BottomSheetDialog> selectCallback)
+		protected virtual BottomSheetDialog CreateMoreBottomSheet(Action<int, BottomSheetDialog> selectCallback)
 		{
 			var bottomSheetDialog = new BottomSheetDialog(Context);
 			var bottomSheetLayout = new LinearLayout(Context);
@@ -122,6 +123,7 @@ namespace Xamarin.Forms.Platform.Android
 			// handle the more tab
 			for (int i = 4; i < ShellItem.Items.Count; i++)
 			{
+				var closure_i = i;
 				var shellContent = ShellItem.Items[i];
 
 				using (var innerLayout = new LinearLayout(Context))
@@ -137,7 +139,7 @@ namespace Xamarin.Forms.Platform.Android
 					// we dont even unhook the events that dont fire
 					void clickCallback(object s, EventArgs e)
 					{
-						selectCallback(shellContent, bottomSheetDialog);
+						selectCallback(closure_i, bottomSheetDialog);
 						if (!innerLayout.IsDisposed())
 							innerLayout.Click -= clickCallback;
 					}
@@ -156,7 +158,7 @@ namespace Xamarin.Forms.Platform.Android
 					lp.Dispose();
 
 					image.ImageTintList = ColorStateList.ValueOf(Color.Black.MultiplyAlpha(0.6).ToAndroid());
-					SetImage(image, shellContent.Icon);
+					image.SetImage(shellContent.Icon, Context);
 
 					innerLayout.AddView(image);
 
@@ -221,7 +223,8 @@ namespace Xamarin.Forms.Platform.Android
 			var id = item.ItemId;
 			if (id == MoreTabId)
 			{
-				var bottomSheetDialog = CreateMoreBottomSheet(OnMoreItemSelected);
+				var items = createTabList(ShellItem);
+				var bottomSheetDialog = BottomNavigationViewUtils.CreateMoreBottomSheet(OnMoreItemSelected, Context, items);
 				bottomSheetDialog.Show();
 				bottomSheetDialog.DismissEvent += OnMoreSheetDismissed;
 			}
@@ -241,6 +244,12 @@ namespace Xamarin.Forms.Platform.Android
 			return true;
 		}
 
+
+		void OnMoreItemSelected(int  shellSectionIndex, BottomSheetDialog dialog)
+		{
+			OnMoreItemSelected(ShellItem.Items[shellSectionIndex], dialog);
+		}
+
 		protected virtual void OnMoreItemSelected(ShellSection shellSection, BottomSheetDialog dialog)
 		{
 			ChangeSection(shellSection);
@@ -255,6 +264,7 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnShellItemsChanged(sender, e);
 
+			
 			SetupMenu();
 		}
 
@@ -288,54 +298,34 @@ namespace Xamarin.Forms.Platform.Android
 		}
 
 		protected virtual void ResetAppearance() => _appearanceTracker.ResetAppearance(_bottomView);
-
-		protected virtual async void SetupMenu(IMenu menu, int maxBottomItems, ShellItem shellItem)
+		List<(string title, ImageSource icon, bool tabEnabled)> createTabList(ShellItem shellItem)
 		{
-			menu.Clear();
-			bool showMore = ShellItem.Items.Count > maxBottomItems;
+			List<(string title, ImageSource icon, bool tabEnabled)> items =
+				new List<(string title, ImageSource icon, bool tabEnabled)>();
 
-			int end = showMore ? maxBottomItems - 1 : ShellItem.Items.Count;
-
-			var currentIndex = shellItem.Items.IndexOf(ShellSection);
-
-			List<IMenuItem> menuItems = new List<IMenuItem>();
-			List<Task> loadTasks = new List<Task>();
-			for (int i = 0; i < end; i++)
+			for (int i = 0; i < shellItem.Items.Count; i++)
 			{
 				var item = shellItem.Items[i];
-				using (var title = new Java.Lang.String(item.Title))
-				{
-					var menuItem = menu.Add(0, i, 0, title);
-					menuItems.Add(menuItem);
-					loadTasks.Add(SetMenuItemIcon(menuItem, item.Icon));
-					UpdateShellSectionEnabled(item, menuItem);
-					if (item == ShellSection)
-					{
-						menuItem.SetChecked(true);
-					}
-				}
+				items.Add((item.Title, item.Icon, item.IsEnabled));
 			}
+			return items;
+		}
 
-			if (showMore)
-			{
-				var moreString = new Java.Lang.String("More");
-				var menuItem = menu.Add(0, MoreTabId, 0, moreString);
-				moreString.Dispose();
 
-				menuItem.SetIcon(Resource.Drawable.abc_ic_menu_overflow_material);
-				if (currentIndex >= maxBottomItems - 1)
-					menuItem.SetChecked(true);
-			}
+		protected virtual void SetupMenu(IMenu menu, int maxBottomItems, ShellItem shellItem)
+		{
+			var currentIndex = shellItem.Items.IndexOf(ShellSection);
+			var items = createTabList(shellItem);
 
-			_bottomView.Visibility = end == 1 ? ViewStates.Gone : ViewStates.Visible;
+			BottomNavigationViewUtils.SetupMenu(
+				menu,
+				maxBottomItems,
+				items,
+				currentIndex,
+				_bottomView,
+				Context);
 
-			_bottomView.SetShiftMode(false, false);
-
-			if (loadTasks.Count > 0)
-				await Task.WhenAll(loadTasks);
-
-			foreach (var menuItem in menuItems)
-				menuItem.Dispose();
+			UpdateTabBarVisibility();
 		}
 
 		protected virtual void UpdateShellSectionEnabled(ShellSection shellSection, IMenuItem menuItem)
@@ -349,11 +339,6 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			if (e.PropertyName == Shell.TabBarIsVisibleProperty.PropertyName)
 				UpdateTabBarVisibility();
-		}
-
-		async void SetImage(ImageView image, ImageSource source)
-		{
-			image.SetImageDrawable(await Context.GetFormsDrawable(source));
 		}
 
 		async Task SetMenuItemIcon(IMenuItem menuItem, ImageSource source)

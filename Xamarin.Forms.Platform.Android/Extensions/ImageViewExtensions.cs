@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Android.Content;
 using Android.Graphics;
-using Android.Graphics.Drawables;
 using AImageView = Android.Widget.ImageView;
 
 namespace Xamarin.Forms.Platform.Android
@@ -81,6 +80,11 @@ namespace Xamarin.Forms.Platform.Android
 			bitmap?.Dispose();
 			imageController?.SetIsLoading(false);
 			imageController?.NativeSizeChanged();
+		}
+
+		public static async void SetImage(this AImageView image, ImageSource source, Context context)
+		{
+			image.SetImageDrawable(await context.GetFormsDrawable(source));
 		}
 	}
 }
