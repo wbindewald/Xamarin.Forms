@@ -447,7 +447,6 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				else
 				{
 					SetupBottomNavigationView(e);
-					UpdateBottomNavigationViewIcons();
 					bottomNavigationView.SetOnNavigationItemSelectedListener(this);
 				}
 
@@ -614,7 +613,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			}
 		}
 
-		List<(string title, ImageSource icon, bool tabEnabled)> createTabList()
+		List<(string title, ImageSource icon, bool tabEnabled)> CreateTabList()
 		{
 			var items = new List<(string title, ImageSource icon, bool tabEnabled)>();
 
@@ -625,15 +624,15 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			}
 
 			return items;
-
 		}
+
 		void SetupBottomNavigationView(NotifyCollectionChangedEventArgs e)
 		{
 			if (IsDisposed)
 				return;
 
 			var currentIndex = Element.Children.IndexOf(Element.CurrentPage);
-			var items = createTabList();
+			var items = CreateTabList();
 
 			BottomNavigationViewUtils.SetupMenu(
 				_bottomNavigationView.Menu,
@@ -645,29 +644,6 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 			if (Element.CurrentPage == null && Element.Children.Count > 0)
 				Element.CurrentPage = Element.Children[0];
-		}
-
-		void UpdateBottomNavigationViewIcons()
-		{
-			if (IsDisposed)
-				return;
-
-			//BottomNavigationView bottomNavigationView = _bottomNavigationView;
-			//var maxBottomItems = _bottomNavigationView.MaxItemCount;
-			//int numberOfMenuItems = Element.Children.Count;
-			//bool showMore = numberOfMenuItems > maxBottomItems;
-			//int end = showMore ? maxBottomItems - 1 : numberOfMenuItems;
-
-			//for (var i = 0; i < end; i++)
-			//{
-			//	Page child = Element.Children[i];
-			//	FileImageSource icon = child.Icon;
-			//	if (string.IsNullOrEmpty(icon))
-			//		continue;
-
-			//	var menuItem = bottomNavigationView.Menu.GetItem(i);
-			//	menuItem.SetIcon(GetIconDrawable(icon));
-			//}
 		}
 
 		void UpdateTabIcons()
@@ -838,11 +814,10 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			if (Element == null || IsDisposed)
 				return false;
 
-
 			var id = item.ItemId;
 			if (id == BottomNavigationViewUtils.MoreTabId)
 			{
-				var items = createTabList();
+				var items = CreateTabList();
 				var bottomSheetDialog = BottomNavigationViewUtils.CreateMoreBottomSheet(OnMoreItemSelected, Context, items);
 				bottomSheetDialog.Show();
 				bottomSheetDialog.DismissEvent += OnMoreSheetDismissed;
@@ -853,9 +828,6 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 					Element.CurrentPage = Element.Children[item.ItemId];
 			}
 			return true;
-
-
-			
 		}
 
 		void OnMoreSheetDismissed(object sender, EventArgs e)
@@ -871,7 +843,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			}
 		}
 
-		private void OnMoreItemSelected(int selectedIndex, BottomSheetDialog dialog)
+		void OnMoreItemSelected(int selectedIndex, BottomSheetDialog dialog)
 		{
 			if (_bottomNavigationView.SelectedItemId != selectedIndex && Element.Children.Count > selectedIndex)
 				Element.CurrentPage = Element.Children[selectedIndex];
@@ -997,7 +969,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			return _emptyStateSet;
 		}
 
-		int[] GetStateSet(System.Collections.Generic.IList<int> stateSet)
+		int[] GetStateSet(IList<int> stateSet)
 		{
 			var results = new int[stateSet.Count];
 			for (int i = 0; i < results.Length; i++)
