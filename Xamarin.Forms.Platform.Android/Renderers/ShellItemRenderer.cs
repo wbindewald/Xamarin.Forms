@@ -223,7 +223,7 @@ namespace Xamarin.Forms.Platform.Android
 			var id = item.ItemId;
 			if (id == MoreTabId)
 			{
-				var items = createTabList(ShellItem);
+				var items = CreateTabList(ShellItem);
 				var bottomSheetDialog = BottomNavigationViewUtils.CreateMoreBottomSheet(OnMoreItemSelected, Context, items);
 				bottomSheetDialog.Show();
 				bottomSheetDialog.DismissEvent += OnMoreSheetDismissed;
@@ -242,12 +242,6 @@ namespace Xamarin.Forms.Platform.Android
 			}
 
 			return true;
-		}
-
-
-		void OnMoreItemSelected(int  shellSectionIndex, BottomSheetDialog dialog)
-		{
-			OnMoreItemSelected(ShellItem.Items[shellSectionIndex], dialog);
 		}
 
 		protected virtual void OnMoreItemSelected(ShellSection shellSection, BottomSheetDialog dialog)
@@ -298,24 +292,11 @@ namespace Xamarin.Forms.Platform.Android
 		}
 
 		protected virtual void ResetAppearance() => _appearanceTracker.ResetAppearance(_bottomView);
-		List<(string title, ImageSource icon, bool tabEnabled)> createTabList(ShellItem shellItem)
-		{
-			List<(string title, ImageSource icon, bool tabEnabled)> items =
-				new List<(string title, ImageSource icon, bool tabEnabled)>();
-
-			for (int i = 0; i < shellItem.Items.Count; i++)
-			{
-				var item = shellItem.Items[i];
-				items.Add((item.Title, item.Icon, item.IsEnabled));
-			}
-			return items;
-		}
-
 
 		protected virtual void SetupMenu(IMenu menu, int maxBottomItems, ShellItem shellItem)
 		{
 			var currentIndex = shellItem.Items.IndexOf(ShellSection);
-			var items = createTabList(shellItem);
+			var items = CreateTabList(shellItem);
 
 			BottomNavigationViewUtils.SetupMenu(
 				menu,
@@ -335,19 +316,27 @@ namespace Xamarin.Forms.Platform.Android
 				menuItem.SetEnabled(tabEnabled);
 		}
 
+		void OnMoreItemSelected(int shellSectionIndex, BottomSheetDialog dialog)
+		{
+			OnMoreItemSelected(ShellItem.Items[shellSectionIndex], dialog);
+		}
+
+		List<(string title, ImageSource icon, bool tabEnabled)> CreateTabList(ShellItem shellItem)
+		{
+			var items = new List<(string title, ImageSource icon, bool tabEnabled)>();
+
+			for (int i = 0; i < shellItem.Items.Count; i++)
+			{
+				var item = shellItem.Items[i];
+				items.Add((item.Title, item.Icon, item.IsEnabled));
+			}
+			return items;
+		}
+
 		void OnDisplayedElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == Shell.TabBarIsVisibleProperty.PropertyName)
 				UpdateTabBarVisibility();
-		}
-
-		async Task SetMenuItemIcon(IMenuItem menuItem, ImageSource source)
-		{
-			if (source == null)
-				return;
-			var drawable = await Context.GetFormsDrawable(source);
-			menuItem.SetIcon(drawable);
-			drawable?.Dispose();
 		}
 
 		void SetupMenu()
