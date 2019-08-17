@@ -331,18 +331,36 @@
       <Project>{e1586ce6-8eac-4388-a15a-1aabf108b5f8}</Project>
       <Name>Xamarin.Forms.Material.Android</Name>
     </ProjectReference>
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.0.0-preview02" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="71.1620.0"></PackageReference>
-    <PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0"></PackageReference>
-    <PackageReference Include="Xamarin.Firebase.AppIndexing" Version="71.1602.0"></PackageReference>
+    <PackageReference Include="Xamarin.Build.Download">
+      <Version>0.4.9</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Firebase.AppIndexing">
+      <Version>60.1142.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Firebase.Common">
+      <Version>60.1142.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.AppIndexing">
+      <Version>60.1142.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Base">
+      <Version>60.1142.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Basement">
+      <Version>60.1142.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Tasks">
+      <Version>60.1142.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.Migration" Version="1.0.0-preview03" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.0.2-preview02" />
     <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0-preview02" />
     <PackageReference Include="Xamarin.AndroidX.CardView" Version="1.0.0-preview02" />
     <PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" Version="1.0.0-preview02" />
     <PackageReference Include="Xamarin.AndroidX.MediaRouter" Version="1.0.0-preview02" />
-    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.0.0-preview02" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\ionicons.ttf">
