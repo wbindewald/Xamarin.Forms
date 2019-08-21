@@ -17,6 +17,8 @@ variables:
   value: 10.3
 - name: NUGET_VERSION
   value: 5.1.0
+- name: winVmImage
+  value: 'windows-2019'
 
 resources:
   repositories:
