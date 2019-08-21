@@ -12,11 +12,11 @@ variables:
 - name: BuildVersion
   value: $[counter('$(Build.SourceBranchName)_counter', 1)]
 - name: MONO_VERSION
-  value: 5_18_1
+  value: 6_0_0
 - name: XCODE_VERSION
-  value: 10.2
+  value: 10.3
 - name: NUGET_VERSION
-  value: 5.0.2
+  value: 5.1.0
 
 resources:
   repositories:
@@ -97,7 +97,7 @@ jobs:
       - msbuild
       - Xamarin.iOS
   variables:
-    provisioningOSX : $(provisioning)
+    provisioningOSX : 'true'
     provisionator.osxPath : 'build/provisioning/provisioning.csx'
     provisionator.signPath : 'build/provisioning/provisioning_sign.csx'
     buildConfiguration: $(DefaultBuildConfiguration)
