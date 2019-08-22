@@ -26,6 +26,9 @@ jobs:
     dependsOn: ${{ parameters.dependsOn }}
     steps:
       - checkout: self
+      - script: |
+          dotnet tool install --global boots
+          boots https://aka.ms/xamarin-android-commercial-d16-2-macos
 
       - script: '/bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh ${{ parameters.monoVersion }}"'
         displayName: 'Select MONO ${{ parameters.monoVersion }}'

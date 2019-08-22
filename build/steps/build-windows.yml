@@ -34,8 +34,6 @@ jobs:
           BuildConfiguration:  ${{ parameters.releaseBuildConfiguration }}
           BuildPlatform: ${{ parameters.buildPlatform }}
     
-    variables:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     steps:
     - script: |
         dotnet tool install --global boots
