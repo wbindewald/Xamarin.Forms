@@ -27,6 +27,8 @@ jobs:
     steps:
       - checkout: self
       - script: |
+          which dotnet
+          whereis dotnet
           export PATH="$PATH:/Users/vsts/.dotnet/tools"
           dotnet tool install --global boots 
           boots https://aka.ms/xamarin-android-commercial-d16-2-macos
