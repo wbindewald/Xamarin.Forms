@@ -21,6 +21,8 @@ PowerShell:
 #addin "nuget:?package=Cake.Xamarin&version=3.0.0"
 #addin "nuget:?package=Cake.Android.Adb&version=3.0.0"
 #addin "nuget:?package=Cake.Git&version=0.19.0"
+#addin nuget:?package=Cake.Boots&version=1.0.0.291
+
 //////////////////////////////////////////////////////////////////////
 // TOOLS
 //////////////////////////////////////////////////////////////////////
@@ -92,6 +94,14 @@ Task("Restore")
         }
     });
 
+
+
+Task("Boots")
+    .Does(async () =>
+    {
+        var platform = IsRunningOnWindows() ? "windows" : "macos";
+        await Boots ($"https://aka.ms/xamarin-android-commercial-d16-2-{platform}");
+    });
 
 Task("BuildHack")
     .IsDependentOn("Restore")
