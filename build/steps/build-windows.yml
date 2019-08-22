@@ -33,7 +33,13 @@ jobs:
         release:
           BuildConfiguration:  ${{ parameters.releaseBuildConfiguration }}
           BuildPlatform: ${{ parameters.buildPlatform }}
+    
+    variables:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     steps:
+    - script: |
+        dotnet tool install --global boots
+        boots https://aka.ms/xamarin-android-commercial-d16-3-windows
 
     - task: NuGetToolInstaller@0
       displayName: 'Use NuGet ${{ parameters.nugetVersion }}'
