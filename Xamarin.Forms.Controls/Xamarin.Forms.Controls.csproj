@@ -167,9 +167,6 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GalleryPages\CollectionViewGalleries\CarouselViewGalleries\" />
-  </ItemGroup>
   
   <Target Name="CreateControllGalleryConfig" BeforeTargets="Build">
     <CreateItem Include="blank.config">
